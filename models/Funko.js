@@ -5,8 +5,7 @@ const userSchema = new Schema({
   nome: { type: String, required: true },
   user: { type: String, required: true },
   senha: { type: String, required: true },
-  email: { type: String, required: true },
-  refreshToken: { type: String }
+  funko: { type: Array }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Funko', funkoSchema);
