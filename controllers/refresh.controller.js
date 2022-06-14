@@ -38,4 +38,4 @@ const refreshToken = async (req, res) => {
   );
 };
 
-module.exports = { handleRefreshToken };
+module.exports = { refreshToken };

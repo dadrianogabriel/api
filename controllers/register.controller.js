@@ -15,6 +15,10 @@ const createNewUser = async (req, res) => {
     $or: [{ user: user }, { email: email }]
   });
 
+  verificarDuplicados.map((item) => {
+    console.log(item.user);
+  });
+
   if (verificarDuplicados.length !== 0) {
     return res.sendStatus(409);
   }

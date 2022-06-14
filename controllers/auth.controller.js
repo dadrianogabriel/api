@@ -22,10 +22,14 @@ const login = async (req, res) => {
   if (verificarSenha) {
     const accessToken = jwt.sign(
       {
-        UserInfo: { user: getUser.user, email: getUser.email }
+        UserInfo: {
+          user: getUser.user,
+          email: getUser.email,
+          nome: getUser.nome
+        }
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10s' }
+      { expiresIn: '5m' }
     );
     const refreshToken = jwt.sign(
       { user: getUser.user },
@@ -43,7 +47,12 @@ const login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000
     });
 
-    res.json({ accessToken, user, senha });
+    res.json({
+      accessToken,
+      user: getUser.user,
+      nome: getUser.nome,
+      email: getUser.email
+    });
   } else {
     res.sendStatus(401);
   }
