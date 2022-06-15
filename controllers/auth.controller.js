@@ -48,10 +48,11 @@ const login = async (req, res) => {
     });
 
     res.json({
-      accessToken,
+      _id: getUser._id,
       user: getUser.user,
       nome: getUser.nome,
-      email: getUser.email
+      email: getUser.email,
+      accessToken
     });
   } else {
     res.sendStatus(401);

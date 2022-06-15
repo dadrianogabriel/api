@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const refreshToken = async (req, res) => {
   const cookies = req.cookies;
+  console.log(cookies);
 
   if (!cookies?.jwt) {
     return res.sendStatus(401);
@@ -36,6 +37,8 @@ const refreshToken = async (req, res) => {
       res.json({ accessToken });
     }
   );
+
+  console.log('teste');
 };
 
 module.exports = { refreshToken };

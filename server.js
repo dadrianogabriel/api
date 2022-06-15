@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const dbConnection = require('./database/dbConn');
 const PORT = process.env.PORT || 3500;
 const validarJWT = require('./middleware/validarJWT');
+const cookieParser = require('cookie-parser');
 
 dbConnection();
 
@@ -18,12 +19,15 @@ app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/refresh', require('./routes/refresh.route'));
-
-app.use(validarJWT);
 app.use('/api/user', require('./routes/user.route'));
+
+// Rotas privadas
+app.use(validarJWT);
+app.use('/api/funko', require('./routes/funko.route'));
 
 mongoose.connection.once('open', () => {
   console.log('Conectado ao MongoDB com sucesso!');
