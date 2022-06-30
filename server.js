@@ -23,11 +23,13 @@ app.use(cookieParser());
 
 app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/refresh', require('./routes/refresh.route'));
-app.use('/api/user', require('./routes/user.route'));
+app.use('/api/funko', require('./routes/funkoPublic.route'));
+app.use('/api/user', require('./routes/userPublic.route'));
 
 // Rotas privadas
 app.use(validarJWT);
-app.use('/api/funko', require('./routes/funko.route'));
+app.use('/api/funko', require('./routes/funkoPrivate.route'));
+app.use('/api/user', require('./routes/userPrivate.route'));
 
 mongoose.connection.once('open', () => {
   console.log('Conectado ao MongoDB com sucesso!');

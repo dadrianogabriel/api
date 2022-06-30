@@ -3,18 +3,18 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
-  const { user, senha } = req.body;
+  const { username, senha } = req.body;
 
-  if (!user || !senha) {
+  if (!username || !senha) {
     return res
       .status(400)
       .json({ message: 'Username e senha são obrigatórios!' });
   }
 
-  const getUser = await User.findOne({ user: user }).exec();
+  const getUser = await User.findOne({ username: username }).exec();
 
   if (!getUser) {
-    return res.sendStatus(401);
+    return res.status(401).json({ message: 'Usuário inexistente!' });
   }
 
   const verificarSenha = await bcrypt.compare(senha, getUser.senha);
@@ -23,7 +23,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       {
         UserInfo: {
-          user: getUser.user,
+          username: getUser.username,
           email: getUser.email,
           nome: getUser.nome
         }
@@ -32,7 +32,7 @@ const login = async (req, res) => {
       { expiresIn: '5m' }
     );
     const refreshToken = jwt.sign(
-      { user: getUser.user },
+      { username: getUser.username },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: '1d' }
     );
@@ -49,13 +49,13 @@ const login = async (req, res) => {
 
     res.json({
       _id: getUser._id,
-      user: getUser.user,
+      username: getUser.username,
       nome: getUser.nome,
       email: getUser.email,
       accessToken
     });
   } else {
-    res.sendStatus(401);
+    res.status(401).json({ message: 'Senha inválida!' });
   }
 };
 
@@ -75,7 +75,7 @@ const logout = async (req, res) => {
   }
 
   getUser.refreshToken = '';
-  await foundUser.save();
+  await getUser.save();
 
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
   res.sendStatus(204);

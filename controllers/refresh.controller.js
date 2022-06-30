@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const refreshToken = async (req, res) => {
   const cookies = req.cookies;
-  console.log(cookies);
 
   if (!cookies?.jwt) {
     return res.sendStatus(401);
@@ -21,24 +20,33 @@ const refreshToken = async (req, res) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     (error, decoded) => {
-      if (error || getUser.user !== decoded.user) {
+      if (error || getUser.username !== decoded.username) {
+        console.log(
+          `Getuser: ${getUser.username} -- RefreshToken: ${decoded.username}`
+        );
         return res.sendStatus(403);
       }
 
       const accessToken = jwt.sign(
         {
           UserInfo: {
-            user: decoded.user
+            username: decoded.username,
+            nome: getUser.nome,
+            email: getUser.email
           }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '5m' }
       );
-      res.json({ accessToken });
+      res.json({
+        accessToken,
+        _id: getUser._id,
+        username: getUser.username,
+        nome: getUser.nome,
+        email: getUser.email
+      });
     }
   );
-
-  console.log('teste');
 };
 
 module.exports = { refreshToken };
